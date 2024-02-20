@@ -5,22 +5,20 @@ import javax.swing.border.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.DataInputStream;
-import java.io.DataOutput;
 import java.io.DataOutputStream;
+import java.net.Socket;
 import java.util.*;
 import java.text.*;
-import java.net.*;
 
 
-public class Server implements ActionListener {
+public class Client implements ActionListener {
 
     JTextField text;
-    JPanel a1;
+    static JPanel a1;
+    private static DataOutputStream dout;
     static Box vertical = Box.createVerticalBox();
     static JFrame f = new JFrame();
-    static DataOutputStream dout;
-
-    Server() {
+    Client() {
 
         f.setLayout(null);
 
@@ -37,7 +35,7 @@ public class Server implements ActionListener {
         back.setBounds(5, 20, 25, 25);
         p1.add(back);
 
-        ImageIcon i4 = new ImageIcon(ClassLoader.getSystemResource("icons/1.png"));
+        ImageIcon i4 = new ImageIcon(ClassLoader.getSystemResource("icons/2.png"));
         Image i5 = i4.getImage().getScaledInstance(50, 50, Image.SCALE_DEFAULT);
         ImageIcon i6 = new ImageIcon(i5);
         JLabel profile = new JLabel(i6);
@@ -65,7 +63,7 @@ public class Server implements ActionListener {
         morevert.setBounds(420, 20, 10, 25);
         p1.add(morevert);
 
-        JLabel name = new JLabel("Person 1");
+        JLabel name = new JLabel("Person 2");
         name.setBounds(110, 15, 100, 18);
         name.setForeground(Color.WHITE);
         name.setFont(new Font("SAN_SERIF", Font.BOLD, 18));
@@ -102,7 +100,7 @@ public class Server implements ActionListener {
         });
 
         f.setSize(450, 700);
-        f.setLocation(200, 50);
+        f.setLocation(800, 50);
         f.setUndecorated(true);
         f.getContentPane().setBackground(Color.WHITE);
 
@@ -129,6 +127,7 @@ public class Server implements ActionListener {
             dout.writeUTF(out);
 
             text.setText("");
+
             f.repaint();
             f.invalidate();
             f.validate();
@@ -161,25 +160,27 @@ public class Server implements ActionListener {
     }
     public static void main(String[] args) {
 
-        new Server();
+        new Client();
 
         try {
-            ServerSocket skt = new ServerSocket(6001);
+            Socket s = new Socket("127.0.0.1", 6001);
+            DataInputStream din = new DataInputStream(s.getInputStream());
+            dout = new DataOutputStream(s.getOutputStream());
+
             while(true) {
-                Socket s = skt.accept();
-                DataInputStream din = new DataInputStream(s.getInputStream());
-                dout = new DataOutputStream(s.getOutputStream());
+                a1.setLayout(new BorderLayout());
+                String msg = din.readUTF();
+                JPanel panel = formatLabel(msg);
 
-                while(true) {
-                    String msg = din.readUTF();
-                    JPanel panel = formatLabel(msg);
+                JPanel left = new JPanel(new BorderLayout());
+                left.add(panel, BorderLayout.LINE_START);
+                vertical.add(left);
 
-                    JPanel left = new JPanel(new BorderLayout());
-                    left.add(panel, BorderLayout.LINE_START);
-                    vertical.add(left);
-                    f.validate();
+                vertical.add(Box.createVerticalStrut(15));
+                a1.add(vertical, BorderLayout.PAGE_START);
 
-                }
+                f.validate();
+
             }
         } catch (Exception e) {
             e.printStackTrace();
