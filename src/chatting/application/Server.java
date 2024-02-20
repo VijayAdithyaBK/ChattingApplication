@@ -1,24 +1,26 @@
 package chatting.application;
 
+// Import necessary packages
 import javax.swing.*;
 import javax.swing.border.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.DataInputStream;
-import java.io.DataOutput;
 import java.io.DataOutputStream;
 import java.util.*;
 import java.text.*;
 import java.net.*;
+import javax.swing.JScrollPane;
+
 
 public class Server implements ActionListener {
 
     // GUI components
     JTextField text;
-    JPanel a1;
-    static Box vertical = Box.createVerticalBox();
-    static JFrame f = new JFrame();
+    static JPanel a1;
     static DataOutputStream dout;
+    static JFrame f = new JFrame();
+    static Box vertical = Box.createVerticalBox();
 
     // Constructor
     Server() {
@@ -85,8 +87,15 @@ public class Server implements ActionListener {
 
         // Chat area panel
         a1 = new JPanel();
-        a1.setBounds(5, 75, 440, 570);
-        f.add(a1);
+        a1.setLayout(new BoxLayout(a1, BoxLayout.Y_AXIS)); // Adjust layout
+
+        if (a1.getHeight() > 570) {
+            a1.setBounds(5, 75, 440, 570);
+            f.add(a1);
+        }
+        JScrollPane scrollPane = new JScrollPane(a1); // Wrap a1 in a JScrollPane
+        scrollPane.setBounds(5, 75, 440, 570); // Set bounds for the scroll pane
+        f.add(scrollPane); // Add the scroll pane to the frame
 
         // Text field for typing messages
         text = new JTextField();
@@ -192,6 +201,7 @@ public class Server implements ActionListener {
                     JPanel left = new JPanel(new BorderLayout());
                     left.add(panel, BorderLayout.LINE_START);
                     vertical.add(left);
+                    a1.add(vertical, BorderLayout.PAGE_START);
                     f.validate();
                 }
             }

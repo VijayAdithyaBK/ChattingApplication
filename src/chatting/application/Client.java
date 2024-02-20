@@ -1,5 +1,6 @@
 package chatting.application;
 
+// Import necessary packages
 import javax.swing.*;
 import javax.swing.border.*;
 import java.awt.*;
@@ -9,6 +10,7 @@ import java.io.DataOutputStream;
 import java.net.Socket;
 import java.util.*;
 import java.text.*;
+import javax.swing.JScrollPane;
 
 
 public class Client implements ActionListener {
@@ -17,8 +19,8 @@ public class Client implements ActionListener {
     JTextField text;
     static JPanel a1;
     private static DataOutputStream dout;
-    static Box vertical = Box.createVerticalBox();
     static JFrame f = new JFrame();
+    static Box vertical = Box.createVerticalBox();
 
     // Constructor
     Client() {
@@ -62,6 +64,7 @@ public class Client implements ActionListener {
         phone.setBounds(360, 20, 35, 30);
         p1.add(phone);
 
+        // More options icon
         ImageIcon i13 = new ImageIcon(ClassLoader.getSystemResource("icons/3icon.png"));
         Image i14 = i13.getImage().getScaledInstance(10, 25, Image.SCALE_DEFAULT);
         ImageIcon i15 = new ImageIcon(i14);
@@ -84,8 +87,15 @@ public class Client implements ActionListener {
 
         // Chat area panel
         a1 = new JPanel();
-        a1.setBounds(5, 75, 440, 570);
-        f.add(a1);
+        a1.setLayout(new BoxLayout(a1, BoxLayout.Y_AXIS)); // Adjust layout
+
+        if (a1.getHeight() > 570) {
+            a1.setBounds(5, 75, 440, 570);
+            f.add(a1);
+        }
+        JScrollPane scrollPane = new JScrollPane(a1); // Wrap a1 in a JScrollPane
+        scrollPane.setBounds(5, 75, 440, 570); // Set bounds for the scroll pane
+        f.add(scrollPane); // Add the scroll pane to the frame
 
         // Text field for typing messages
         text = new JTextField();
@@ -115,6 +125,8 @@ public class Client implements ActionListener {
         f.setLocation(800, 50);
         f.setUndecorated(true);
         f.getContentPane().setBackground(Color.WHITE);
+
+        // Make JFrame visible
         f.setVisible(true);
     }
 
